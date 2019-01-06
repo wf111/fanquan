@@ -27,27 +27,11 @@ gulp.task('webserver', function() {
             .pipe(webserver({
                 port: 3333, //设置端口号
                 open: true, //自动打开浏览器
-                livereload: true //自动更新
-                    // host: '192.168.0.221',//配置 IP
-                    // fallback: 'list.html'  //制定默认打开文件
-                    // middleware: function(req, res, next) {
-                    //     var pathname = url.parse(req.url).pathname;
-                    //     if (pathname === '/favicon.ico') {
-                    //         res.end('')
-                    //         return;
-                    //     }
-                    //     if (pathname === '/api/list') {
-                    //         res.end(JSON.stringify({
-                    //             code: 0,
-                    //             data: list
-                    //         }))
-                    //     } else {
-                    //         pathname = pathname === '/' ? 'index.html' : pathname;
-                    //         res.end(fs.readFileSync(path.join(__dirname, "src", pathname)))
-                    //     }
-
-
-                // }
+                livereload: true, //自动更新
+                proxies: [{
+                    source: "/list",
+                    target: "http://192.168.0.68:3000/list"
+                }]
             }))
     })
     //开发环境

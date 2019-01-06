@@ -210,10 +210,10 @@ section {
       section .list ul li {
         padding: 10px;
         font-size: 0.4rem; }
-      section .list ul .active {
-        color: red;
-        font-size: 0.48rem;
-        border-bottom: 5px solid red; }
+        section .list ul li.active {
+          color: red;
+          font-size: 0.48rem;
+          border-bottom: 5px solid red; }
     section .list .cont-cont {
       width: 100%;
       display: flex;
@@ -263,7 +263,7 @@ section {
             justify-content: space-between;
             -webkit-align-items: center;
             align-items: center;
-            margin-top: 10px; }
+            margin-top: 8px; }
             section .list .cont-cont > dl dd p b {
               color: #000;
               font-size: 0.37333rem; }

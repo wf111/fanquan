@@ -9,19 +9,36 @@
     <script src="./js/flexible.js"></script>
     <link rel="stylesheet" href="./css/index.css">
 </head>
+<style>
+    .section {
+        position: relative;
+    }
+    
+    .section:before {
+        content: attr(data-down);
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        background: pink;
+        position: absolute;
+        right: 0;
+        bottom: -50px;
+    }
+</style>
 
 <body>
     <div class="wrapper">
         <header></header>
-        <section>
-            <div class="list">
+        <section class="section" data-down="上拉加载...">
+            <div class="list" id="list">
                 <ul>
                     <li class="active">我的爱豆</li>
                     <li>所有爱豆</li>
                     <li>饭局大卡</li>
                 </ul>
-                <div class="cont-cont">
-                    <dl>
+                <div class="cont-cont" id='main'>
+                    <!-- <dl> 
                         <dt><img src="./img/a.png" alt=""></dt>
                         <dd>
                             <p>开花结实梵不动法给你</p>
@@ -36,23 +53,8 @@
                             <p>变的地方局功能简单</p>
                             <p><b>赵丽颖</b><b>1211</b></p>
                         </dd>
-                    </dl>
-                    <dl>
-                        <dt><img src="./img/a.png" alt=""></dt>
-                        <dd>
-                            <p>开花结实梵不动法给你</p>
-                            <p>变的地方局功能简单</p>
-                            <p><b>赵丽颖</b><b>1211</b></p>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt><img src="img/b.png" alt=""></dt>
-                        <dd>
-                            <p>开花结实不动法给你</p>
-                            <p>变的地方局功能简单</p>
-                            <p><b>赵丽颖</b><b>1211</b></p>
-                        </dd>
-                    </dl>
+                    </dl> -->
+
                 </div>
             </div>
         </section>
@@ -61,7 +63,97 @@
     </div>
     <script src="./js/better-scroll.js"></script>
     <script>
-        new BScroll('section')
+        var section = document.querySelector('.section'),
+            tip = "释放更多数据...",
+            flag = "上拉加载...",
+            an = "暂无数据";
+        var BScroll = new BScroll('section', {
+            probeType: 2,
+            click: true,
+            scrollY: true
+        });
+        var id = 0;
+        var sum = 1;
+        var page = 4;
+
+        ajax()
+
+        BScroll.on('scroll', function() {
+            if (this.y < this.maxScrollY - 50) {
+                section.dataset.down = tip;
+            } else if (this.y < this.maxScrollY - 10) {
+                section.dataset.down = flag;
+            }
+        })
+
+        BScroll.on('scrollEnd', function() {
+            section.dataset.down = tip;
+
+        })
+        BScroll.on('touchEnd', function() {
+            if (section.dataset.down === tip) {
+                sum++;
+
+                ajax();
+            }
+        });
+        var lis = Array.from(document.querySelectorAll('#list li'));
+        // var lis = document.querySelector('#list');
+
+        lis.map(function(v, i) {
+            v.onclick = function() {
+                lis.map(function(val) {
+                    val.classList.remove('active');
+                })
+                this.classList.add('active');
+                sum = 0;
+                id = i;
+                ajax()
+            }
+        })
+
+
+        function ajax() {
+            console.log(id);
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function(res) {
+                    //console.log(JSON.parse(res.target.responseText))
+                    render(JSON.parse(res.target.responseText))
+
+                }
+                // console.log(sum)
+            xhr.open('get', '/list?index=' + id + "&page=" + page + "&sum=" + sum);
+            xhr.send();
+        }
+
+        function render(data) {
+            // console.log(data)
+            console.log(data.count)
+            if (sum <= data.count) {
+
+                main.innerHTML = data.data.map(function(item) {
+                    return `<dl>
+                            <dt><img src="${item.img}" alt=""></dt>
+                            <dd>
+                                <p>${item.title}</p>
+                                <p>${item.title}</p>
+                                <p><b>${item.name}</b><b>${item.numb}</b></p>
+                            </dd>
+                        </dl>`
+                }).join('')
+            } else {
+                main.innerHTML = an;
+                BScroll.on('scroll', function() {
+                    if (this.y < this.maxScrollY) {
+                        main.dataset.down = an;
+                    }
+                });
+                BScroll.on('scrollEnd', function() {
+                    main.dataset.down = an;
+                });
+            }
+            BScroll.refresh();
+        }
     </script>
 </body>
 

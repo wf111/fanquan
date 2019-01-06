@@ -20,6 +20,7 @@ section {
     @include flex;
     padding: 0 pxTorem(15px);
     @include sizing;
+    // overflow-y: sroll;
     .list {
         width: 100%;
         ul {
@@ -32,11 +33,11 @@ section {
             li {
                 padding: 10px;
                 font-size: pxTorem(15px);
-            }
-            .active {
-                color: red;
-                font-size: pxTorem(18px);
-                border-bottom: 5px solid red;
+                &.active {
+                    color: red;
+                    font-size: pxTorem(18px);
+                    border-bottom: 5px solid red;
+                }
             }
         }
         .cont-cont {
@@ -69,7 +70,7 @@ section {
                         @include box_flex;
                         @include justify(space-between);
                         @include align;
-                        margin-top: 10px;
+                        margin-top: 8px;
                         b {
                             color: #000;
                             font-size: pxTorem(14px);
